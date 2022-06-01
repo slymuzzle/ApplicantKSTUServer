@@ -1,7 +1,10 @@
 #!/bin/bash
-if [ -f .env ]; then
-  set -o allexport; source .env; set +o allexport
+
+if [ ! -f .env ]; then
+    cp .env.example .env
 fi
+
+set -o allexport; source .env; set +o allexport
 
 DOCKER_COMPOSE_DIR=.
 DOCKER_BUILD_FILES_DIR="$DOCKER_COMPOSE_DIR"/.docker
@@ -82,7 +85,6 @@ init () {
         fi
 
         configure-laravel \
-        && yarn install \
         && start
 }
 
@@ -118,7 +120,7 @@ update () {
 
 # Run a Yarn command
 yarn () {
-    docker-compose run --user "$APP_USER" --rm node yarn "${@:1}"
+    docker-compose run --user "$APP_USER" --rm php yarn "${@:1}"
 }
 
 #######################################

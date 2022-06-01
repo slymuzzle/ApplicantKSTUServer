@@ -10,7 +10,6 @@ x-app-volume: &app-volume ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
 
 services:
   nginx:
-    container_name: nginx
     env_file: .env
     build:
       context: ./.docker/build/nginx
@@ -23,14 +22,11 @@ services:
       - pgsql
 
   php:
-    container_name: php
     env_file: .env
     build:
       context: ./.docker/build/php/${PHP_VERSION}
       args:
         <<: *user-args
-        GIT_USER: ${GIT_USER}
-        GIT_USER_MAIL: ${GIT_USER_MAIL}
         APP_CODE_PATH: ${APP_CODE_PATH_CONTAINER}
     restart: always
     volumes:
@@ -39,7 +35,6 @@ services:
       - pgsql
 
   pgsql:
-    container_name: pgsql
     image: postgres:13.4-alpine
     restart: always
     environment:

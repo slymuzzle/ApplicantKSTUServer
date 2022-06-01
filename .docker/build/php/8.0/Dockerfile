@@ -9,6 +9,7 @@ RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/co
     php8-common \
     php8-gd \
     php8-xmlreader \
+    php8-xmlwriter \
     php8-bcmath \
     php8-ctype \
     php8-curl \
@@ -28,11 +29,13 @@ RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/co
     php8-dom \
     php8-fpm \
     php8-sodium \
+    php8-pdo \
     php8-pdo_pgsql \
     php8-pgsql \
     php8-posix \
     php8-redis \
     php8-tokenizer \
+    php8-fileinfo \
     # Iconv Fix
     && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted php8-pecl-apcu \
     && ln -s /usr/bin/php8 /usr/bin/php

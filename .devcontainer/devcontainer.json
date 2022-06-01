@@ -1,6 +1,6 @@
 // https://aka.ms/devcontainer.json
 {
-    "name": "Existing Docker Compose (Extend)",
+    "name": "${localWorkspaceFolderBasename}",
     "dockerComposeFile": [
         "../docker-compose.yml",
         "../.docker/dev/docker-compose.yml"
