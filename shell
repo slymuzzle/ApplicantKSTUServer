@@ -1,0 +1,200 @@
+#!/bin/bash
+if [ -f .env ]; then
+  set -o allexport; source .env; set +o allexport
+fi
+
+DOCKER_COMPOSE_DIR=.
+DOCKER_BUILD_FILES_DIR="$DOCKER_COMPOSE_DIR"/.docker
+DOCKER_COMPOSE_FILE="$DOCKER_COMPOSE_DIR"/docker-compose.yml
+
+#######################################
+# FUNCTIONS
+#######################################
+
+# Create laravel project
+install-laravel() {
+    docker-compose run --user "$APP_USER" --rm php composer create-project --prefer-dist laravel/laravel tmp "$LARAVEL_VERSION"
+    docker-compose run --user "$APP_USER" --rm php sh -c "mv -n tmp/.* ./ && mv tmp/* ./ && rm -Rf tmp"
+}
+
+# Configure laravel project
+configure-laravel () {
+    if [ -f "$APP_CODE_PATH_HOST"/.env ]; then
+        read -p "Rewrite Laravel .env file? [y/N]: " -r
+        if [[ $REPLY =~ ^[Yy]$ ]]; then rm -f "$APP_CODE_PATH_HOST"/.env; fi
+    fi
+
+    docker-compose run --user "$APP_USER" --rm --entrypoint="//opt/files/laravel_init" php
+}
+
+# Run docker-compose command
+docker-compose() {
+    command docker-compose -f "$DOCKER_COMPOSE_FILE" --project-directory "$DOCKER_COMPOSE_DIR" -f "$DOCKER_BUILD_FILES_DIR"/"$ENV"/docker-compose.yml "${@:1}"
+}
+
+# Show docker-compose.yml
+config() {
+    docker-compose config
+}
+
+# Run an Artisan command
+artisan () {
+    docker-compose run --user "$APP_USER" --rm php php artisan "${@:1}"
+}
+
+# Build all of the images or the specified one
+build () {
+    docker-compose build "${@:1}"
+}
+
+# Run a Composer command
+composer () {
+    docker-compose run --user "$APP_USER" --rm php composer "${@:1}"
+}
+
+# Remove the entire Docker environment
+destroy () {
+    read -p "This will delete containers, volumes and images. Are you sure? [y/N]: " -r
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then exit; fi
+    docker-compose down -v --rmi all --remove-orphans
+}
+
+# Stop and destroy all containers
+down () {
+    docker-compose down "${@:1}"
+}
+
+# Create .env from .env.example
+env () {
+    if [ ! -f .env ]; then
+        cp .env.example .env
+    fi
+}
+
+# Initialise the Docker environment and the application
+init () {
+    env \
+        && down -v \
+        && build
+
+        if [ ! -f "$APP_CODE_PATH_HOST"/artisan ]; then
+            install-laravel
+        fi
+
+        configure-laravel \
+        && yarn install \
+        && start
+}
+
+# Display and tail the logs of all containers or the specified one's
+logs () {
+    docker-compose logs -f "${@:1}"
+}
+
+# Restart the containers
+restart () {
+    stop && start
+}
+
+# Start the containers
+start () {
+    docker-compose up -d
+}
+
+# Stop the containers
+stop () {
+    docker-compose stop
+}
+
+# Update the Docker environment
+update () {
+    git pull \
+        && build \
+        && composer install \
+        && artisan migrate \
+        && yarn install \
+        && start
+}
+
+# Run a Yarn command
+yarn () {
+    docker-compose run --user "$APP_USER" --rm node yarn "${@:1}"
+}
+
+#######################################
+# MENU
+#######################################
+
+case "$1" in
+    docker-compose)
+        docker-compose "${@:2}"
+        ;;
+    config)
+        config
+        ;;
+    artisan)
+        artisan "${@:2}"
+        ;;
+    build)
+        build "${@:2}"
+        ;;
+    composer)
+        composer "${@:2}"
+        ;;
+    destroy)
+        destroy
+        ;;
+    down)
+        down "${@:2}"
+        ;;
+    init)
+        init
+        ;;
+    logs)
+        logs "${@:2}"
+        ;;
+    restart)
+        restart
+        ;;
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    update)
+        update
+        ;;
+    yarn)
+        yarn "${@:2}"
+        ;;
+    *)
+        cat << EOF
+
+Command line interface for the Docker-based web development environment.
+
+Usage:
+    shell <command> [options] [arguments]
+
+Available commands:
+    docker-compose ............................ Run a Docker Compose command
+    config .................................... Show docker-compose.yml
+    artisan ................................... Run an Artisan command
+    build [image] ............................. Build all of the images or the specified one
+    composer .................................. Run a Composer command
+    destroy ................................... Remove the entire Docker environment
+    down [-v] ................................. Stop and destroy all containers
+                                                Options:
+                                                    -v .................... Destroy the volumes as well
+    init ...................................... Initialise the Docker environment and the application
+    logs [container] .......................... Display and tail the logs of all containers or the specified one's
+    restart ................................... Restart the containers
+    start ..................................... Start the containers
+    stop ...................................... Stop the containers
+    update .................................... Update the Docker environment
+    yarn ...................................... Run a Yarn command
+
+EOF
+        exit
+        ;;
+esac

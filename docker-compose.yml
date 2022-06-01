@@ -1,0 +1,71 @@
+version: "3.8"
+
+x-user-args: &user-args
+  APP_USER: ${APP_USER}
+  APP_GROUP: ${APP_GROUP}
+  APP_USER_ID: ${APP_USER_ID}
+  APP_GROUP_ID: ${APP_GROUP_ID}
+
+x-app-volume: &app-volume ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+
+services:
+  nginx:
+    container_name: nginx
+    env_file: .env
+    build:
+      context: ./.docker/build/nginx
+      args: *user-args
+    restart: always
+    volumes:
+      - *app-volume
+    depends_on:
+      - php
+      - pgsql
+
+  php:
+    container_name: php
+    env_file: .env
+    build:
+      context: ./.docker/build/php/${PHP_VERSION}
+      args:
+        <<: *user-args
+        GIT_USER: ${GIT_USER}
+        GIT_USER_MAIL: ${GIT_USER_MAIL}
+        APP_CODE_PATH: ${APP_CODE_PATH_CONTAINER}
+    restart: always
+    volumes:
+      - *app-volume
+    depends_on:
+      - pgsql
+
+  pgsql:
+    container_name: pgsql
+    image: postgres:13.4-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  redis:
+    image: "redis:6.2-alpine"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      retries: 3
+      timeout: 5s
+
+volumes:
+  pg-data:
+    driver: local
+  redis-data:
+    driver: local
