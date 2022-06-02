@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import Node from '@components/ContentTreeEditor/Node';
 import NodeForm, { formStates } from '@components/ContentTreeEditor/NodeForm';
 import TreeHeader from '@components/ContentTreeEditor/TreeHeader';
-import NodeMdEditor from '@components/ContentTreeEditor/NodeMdEditor';
+import NodeEditor from '@components/ContentTreeEditor/NodeEditor';
 import {
   createNode, saveNode, deleteNode, saveTree,
 } from '@components/ContentTreeEditor/api';
@@ -73,8 +73,8 @@ function ContentTreeEditor({ controller, tree }) {
   const onDrop = (changeInfo) => {
     const data = drop(changeInfo, [...treeData]);
 
-    saveTree(controller, data).then(() => {
-      setTreeData(data);
+    saveTree(controller, data).then((response) => {
+      setTreeData(response.data.tree);
     });
   };
 
@@ -186,7 +186,7 @@ function ContentTreeEditor({ controller, tree }) {
       </Row>
       <Row>
         <Col style={{ visibility: Object.keys(selectedItem).length === 0 ? 'hidden' : 'visible' }}>
-          <NodeMdEditor
+          <NodeEditor
             controller={controller}
             node={selectedItem}
             onSave={onSave}

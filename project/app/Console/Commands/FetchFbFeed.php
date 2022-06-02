@@ -41,5 +41,6 @@ class FetchFbFeed extends Command
     public function handle(FetchFbFeedJob $job)
     {
         $job->dispatch();
+        $this->info('Feed fetched and synchronized.');
     }
 }

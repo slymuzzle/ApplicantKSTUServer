@@ -25,7 +25,7 @@ class ContentTreeEditorMainScreen extends Screen
     public function query(ApplicantInfoTree $infoTree): array
     {
         return [
-            'tree' => $infoTree->defaultOrder()->get()->toTree(),
+            'tree' => $infoTree->defaultOrder()->withDepth()->get()->toTree(),
         ];
     }
 
@@ -77,7 +77,7 @@ class ContentTreeEditorMainScreen extends Screen
         $infoTree->rebuildTree($tree);
 
         return [
-            'tree' => $infoTree->defaultOrder()->get()->toTree(),
+            'tree' => $infoTree->defaultOrder()->withDepth()->get()->toTree(),
         ];
     }
 
@@ -100,7 +100,7 @@ class ContentTreeEditorMainScreen extends Screen
 
         return [
             'createdNode' => $createdNode,
-            'tree' => $infoTree->defaultOrder()->get()->toTree(),
+            'tree' => $infoTree->defaultOrder()->withDepth()->get()->toTree(),
         ];
     }
 
@@ -119,7 +119,7 @@ class ContentTreeEditorMainScreen extends Screen
         }
 
         return [
-            'tree' => $infoTree->defaultOrder()->get()->toTree(),
+            'tree' => $infoTree->defaultOrder()->withDepth()->get()->toTree(),
         ];
     }
 
@@ -133,7 +133,7 @@ class ContentTreeEditorMainScreen extends Screen
         }
 
         return [
-            'tree' => $infoTree->defaultOrder()->get()->toTree(),
+            'tree' => $infoTree->defaultOrder()->withDepth()->get()->toTree(),
         ];
     }
 
@@ -163,8 +163,6 @@ class ContentTreeEditorMainScreen extends Screen
             $fileModel->save();
 
             $originalName = $request->file->getClientOriginalName();
-
-            dump(request()->server('SERVER_ADDR'));
 
             $file = [
                 'title' => substr($originalName, 0, strrpos($originalName, ".")),
