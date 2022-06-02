@@ -2,7 +2,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name app.local;
-    root /var/www/html/public;
+    root ${APP_CODE_PATH_CONTAINER}/project/public;
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";

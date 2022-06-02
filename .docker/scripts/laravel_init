@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # Install Composer dependencies
-composer install -d "/var/www/html"
+composer install -d "${APP_CODE_PATH_CONTAINER}/project"
 
 # Deal with the .env file if necessary
-if [ ! -f "/var/www/html/.env" ]; then
+if [ ! -f "${APP_CODE_PATH_CONTAINER}/project/.env" ]; then
     # Create .env file
-    cp "/var/www/html/.env.example" "/var/www/html/.env"
+    cp "${APP_CODE_PATH_CONTAINER}/project/.env.example" "${APP_CODE_PATH_CONTAINER}/project/.env"
 
     # Generate application key
-    php "/var/www/html/artisan" key:generate --ansi
+    php "${APP_CODE_PATH_CONTAINER}/project/artisan" key:generate --ansi
 fi
 
 # Yarn install
-yarn --cwd "/var/www/html/" install
+yarn --cwd "${APP_CODE_PATH_CONTAINER}/project" install
 
 # Database
-php "/var/www/html/artisan" migrate
+php "${APP_CODE_PATH_CONTAINER}/project/artisan" migrate

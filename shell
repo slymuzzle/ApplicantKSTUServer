@@ -22,9 +22,9 @@ install-laravel() {
 
 # Configure laravel project
 configure-laravel () {
-    if [ -f "$APP_CODE_PATH_HOST"/.env ]; then
+    if [ -f "$APP_CODE_PATH_HOST"/project/.env ]; then
         read -p "Rewrite Laravel .env file? [y/N]: " -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then rm -f "$APP_CODE_PATH_HOST"/.env; fi
+        if [[ $REPLY =~ ^[Yy]$ ]]; then rm -f "$APP_CODE_PATH_HOST"/project/.env; fi
     fi
 
     docker-compose run --user "$APP_USER" --rm --entrypoint="//opt/files/laravel_init" php
@@ -80,7 +80,7 @@ init () {
         && down -v \
         && build
 
-        if [ ! -f "$APP_CODE_PATH_HOST"/artisan ]; then
+        if [ ! -f "$APP_CODE_PATH_HOST"/project/artisan ]; then
             install-laravel
         fi
 

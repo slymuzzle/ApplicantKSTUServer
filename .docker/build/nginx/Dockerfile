@@ -1,6 +1,6 @@
-FROM nginx:1.17-alpine as main
+FROM nginx:1.21.6-alpine as main
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./templates/dev.conf.template /etc/nginx/templates/default.conf.template
 
 EXPOSE 80 443
 

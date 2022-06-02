@@ -31,17 +31,6 @@ services:
     ports:
       - "6379:6379"
 
-  phppgadmin:
-    container_name: phppgadmin
-    image: bitnami/phppgadmin:7
-    environment:
-      DATABASE_HOST: ${PHP_PG_ADMIN_DATABASE_HOST}
-      DATABASE_PORT_NUMBER: ${PHP_PG_ADMIN_DATABASE_PORT_NUMBER}
-    ports:
-      - "${PHP_PG_ADMIN_HOST_PORT}:8080"
-    depends_on:
-      - pgsql
-
 volumes:
   vs-server:
     driver: local
