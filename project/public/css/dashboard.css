@@ -3590,6 +3590,9 @@ html {
 .ant-tree-list-holder-inner {
   margin: 10px 0 10px 0;
 }
+.cdx-list__item {
+  word-wrap: break-word;
+}
 .editor-fullscreen {
   height: 100%;
   width: 100%;

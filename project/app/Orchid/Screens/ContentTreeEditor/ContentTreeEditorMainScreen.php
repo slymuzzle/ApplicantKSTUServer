@@ -151,7 +151,7 @@ class ContentTreeEditorMainScreen extends Screen
     public function uploadFile(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:docx,pdf,xls,xlsx,jpg,jpeg,png,svg,gif',
+            'file' => 'required|mimes:pdf,jpg,jpeg,png',
         ]);
 
         $fileModel = new File;
@@ -169,7 +169,7 @@ class ContentTreeEditorMainScreen extends Screen
                 'name' => $fileName,
                 'size' => $request->file->getSize(),
                 'extension' => $request->file->getClientOriginalExtension(),
-                'url' => request()->root() . Storage::url($filePath),
+                'url' => asset(Storage::url($filePath)),
             ];
 
             return compact('file');

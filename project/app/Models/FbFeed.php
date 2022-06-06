@@ -19,6 +19,7 @@ class FbFeed extends Model
     protected $fillable = [
         'post_id',
         'post_data',
+        'post_created_time',
         'post_updated_time',
     ];
 }

@@ -95,6 +95,7 @@ export default function NodeMdEditor({ controller, node = {}, onSave }) {
             },
           },
         },
+        types: ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'],
       },
       inlineToolbar: true,
     };

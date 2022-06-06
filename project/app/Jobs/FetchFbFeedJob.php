@@ -54,6 +54,10 @@ class FetchFbFeedJob implements ShouldQueue
                 ],
                 [
                     'post_data' => json_encode($post),
+                    'post_created_time' => date(
+                        'Y-m-d H:i:s',
+                        strtotime($post['created_time'])
+                    ),
                     'post_updated_time' => date(
                         'Y-m-d H:i:s',
                         strtotime($post['updated_time'])

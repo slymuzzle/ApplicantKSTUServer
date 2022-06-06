@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('post_id')->nullable();
             $table->json('post_data')->nullable();
+            $table->dateTime('post_created_time')->nullable();
             $table->dateTime('post_updated_time')->nullable();
             $table->timestamps();
             $table->unique(['post_id']);

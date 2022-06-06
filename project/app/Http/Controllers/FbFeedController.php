@@ -9,6 +9,6 @@ class FbFeedController extends Controller
 {
     public function index()
     {
-        return FbFeed::cursorPaginate(15);
+        return FbFeed::orderByDesc('post_created_time')->cursorPaginate(15);
     }
 }
