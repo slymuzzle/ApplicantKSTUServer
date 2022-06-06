@@ -95,7 +95,7 @@ return [
     |
     */
 
-    'index' => 'platform.main',
+    'index' => 'platform.content_tree_editor',
 
     /*
     |--------------------------------------------------------------------------
