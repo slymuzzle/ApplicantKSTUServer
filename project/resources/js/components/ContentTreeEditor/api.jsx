@@ -1,7 +1,5 @@
-import axios from 'axios';
-
 export const saveTree = (controller, data) => {
-  const promise = axios.post(controller.prefix('/content_tree_editor/saveTree'), data)
+  const promise = window.axios.post(controller.prefix('/content_tree_editor/saveTree'), data)
     .then((response) => {
       controller.alert(
         'Дерево перестроено',
@@ -24,7 +22,7 @@ export const saveTree = (controller, data) => {
 };
 
 export const createNode = (controller, nodeForm, parentNode = {}) => {
-  const promise = axios.post(
+  const promise = window.axios.post(
     controller.prefix('/content_tree_editor/createNode'),
     {
       nodeForm,
@@ -52,7 +50,7 @@ export const createNode = (controller, nodeForm, parentNode = {}) => {
 };
 
 export const saveNode = (controller, node, nodeForm) => {
-  const promise = axios.post(
+  const promise = window.axios.post(
     controller.prefix('/content_tree_editor/saveNode'),
     {
       node,
@@ -80,7 +78,7 @@ export const saveNode = (controller, node, nodeForm) => {
 };
 
 export const deleteNode = (controller, nodeId) => {
-  const promise = axios.post(
+  const promise = window.axios.post(
     controller.prefix('/content_tree_editor/deleteNode'),
     {
       nodeId,
@@ -107,7 +105,7 @@ export const deleteNode = (controller, nodeId) => {
 };
 
 export const getNodeContent = (controller, nodeId) => {
-  const promise = axios.post(
+  const promise = window.axios.post(
     controller.prefix('/content_tree_editor/getNodeContent'),
     {
       nodeId,
@@ -132,7 +130,7 @@ export const uploadFile = (controller, file) => {
     },
   };
 
-  const promise = axios.post(
+  const promise = window.axios.post(
     controller.prefix('/content_tree_editor/uploadFile'),
     formData,
     config,
