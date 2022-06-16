@@ -18,6 +18,7 @@ use App\Orchid\Screens\User\UserProfileScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 use App\Orchid\Screens\ContentTreeEditor\ContentTreeEditorMainScreen;
+use App\Orchid\Screens\NotificationSenderScreen;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,11 +114,20 @@ Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platfor
 Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
 Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
-// Constructor
-Route::screen('/content_tree_editor', ContentTreeEditorMainScreen::class)
+// Platform > ContentTreeEditor
+Route::screen('content_tree_editor', ContentTreeEditorMainScreen::class)
     ->name('platform.content_tree_editor')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
             ->push(__('Контент'), route('platform.content_tree_editor'));
-    });;
+    });
+
+// Platform > NotificationSender
+Route::screen('notification_sender', NotificationSenderScreen::class)
+    ->name('platform.email')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push(__('Уведомления'), route('platform.notification_sender'));
+    });

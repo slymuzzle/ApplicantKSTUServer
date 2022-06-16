@@ -22,12 +22,6 @@ class PlatformProvider extends OrchidServiceProvider
     public function boot(Dashboard $dashboard): void
     {
         parent::boot($dashboard);
-
-        LayoutFactory::macro('treeEdit', function (array $layouts = []) {
-            return new class($layouts) extends TreeEditLayout
-            {
-            };
-        });
     }
 
     /**
@@ -55,6 +49,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->title('Управление')
                 ->icon('note')
                 ->route('platform.content_tree_editor'),
+
+            Menu::make('Уведомления')
+                ->title('Отправка')
+                ->icon('note')
+                ->route('platform.notification_sender'),
 
             // Menu::make('Advanced Elements')
             //     ->icon('briefcase')
