@@ -51,8 +51,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.content_tree_editor'),
 
             Menu::make('Уведомления')
-                ->title('Отправка')
-                ->icon('note')
+                ->icon('paper-plane')
                 ->route('platform.notification_sender'),
 
             // Menu::make('Advanced Elements')

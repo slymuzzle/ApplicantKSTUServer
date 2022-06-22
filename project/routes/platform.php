@@ -125,7 +125,7 @@ Route::screen('content_tree_editor', ContentTreeEditorMainScreen::class)
 
 // Platform > NotificationSender
 Route::screen('notification_sender', NotificationSenderScreen::class)
-    ->name('platform.email')
+    ->name('platform.notification_sender')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')

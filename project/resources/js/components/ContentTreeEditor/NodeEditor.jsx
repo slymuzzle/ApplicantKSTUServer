@@ -13,8 +13,77 @@ import Carousel from '@editorjs/carousel';
 import List from '@editorjs/list';
 import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 import { FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons';
 import { getNodeContent, uploadFile } from '@components/ContentTreeEditor/api';
+
+const i18n = {
+  messages: {
+    ui: {
+      blockTunes: {
+        toggler: {
+          'Click to tune': 'Нажмите, чтобы настроить',
+          'or drag to move': 'или перетащите',
+        },
+      },
+      inlineToolbar: {
+        converter: {
+          'Convert to': 'Конвертировать в',
+        },
+      },
+      toolbar: {
+        toolbox: {
+          Add: 'Добавить',
+        },
+      },
+    },
+    toolNames: {
+      Text: 'Параграф',
+      Heading: 'Заголовок',
+      List: 'Список',
+      Quote: 'Цитата',
+      Delimiter: 'Разделитель',
+      Link: 'Ссылка',
+      Bold: 'Полужирный',
+      Italic: 'Курсив',
+      Image: 'Изображение',
+      Carousel: 'Коллаж',
+      Attaches: 'PDF',
+    },
+    tools: {
+      warning: {
+        Title: 'Название',
+        Message: 'Сообщение',
+      },
+      link: {
+        'Add a link': 'Вставьте ссылку',
+      },
+      stub: {
+        'The block can not be displayed correctly.': 'Блок не может быть отображен',
+      },
+      image: {
+        'Stretch image': 'Растянуть изображение',
+        'With border': 'C рамкой',
+        'With background': 'C фоном',
+      },
+      list: {
+        Ordered: 'Упорядоченный',
+        Unordered: ' Неупорядоченный',
+      },
+    },
+    blockTunes: {
+      delete: {
+        Delete: 'Удалить',
+      },
+      moveUp: {
+        'Move up': 'Переместить вверх',
+      },
+      moveDown: {
+        'Move down': 'Переместить вниз',
+      },
+    },
+  },
+};
 
 const EDITOR_JS_TOOLS = {
   header: {
@@ -58,9 +127,10 @@ const uploadByFile = (controller, file) => uploadFile(controller, file).then((re
 const ReactEditorJS = createReactEditorJS();
 
 export default function NodeMdEditor({ controller, node = {}, onSave }) {
+  const editorContainer = useRef(null);
   const editorCore = useRef(null);
-  const [undo, setUndo] = useState({});
-  const [editorContent] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [undo, setUndo] = useState(null);
   const [fullScreen, setFullScreen] = useState(false);
   const [tools] = useState(() => {
     const configuredTools = {
@@ -94,8 +164,8 @@ export default function NodeMdEditor({ controller, node = {}, onSave }) {
               return uploadByFile(controller, file);
             },
           },
+          buttonText: 'Выбрать PDF файл для загрузки',
         },
-        types: ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'],
       },
       inlineToolbar: true,
     };
@@ -108,28 +178,34 @@ export default function NodeMdEditor({ controller, node = {}, onSave }) {
     }
 
     editorCore.current._editorJS.isReady.then(() => {
+      setLoading(true);
       getNodeContent(controller, node.id).then((content) => {
+        undo.clear();
         if (content !== null && content !== '') {
           const parsedContent = JSON.parse(content);
-          if (parsedContent.blocks.length !== 0) {
-            editorCore.current.render(JSON.parse(content));
+          if (parsedContent.blocks !== 0) {
+            editorCore.current.render(parsedContent);
+            undo.initialize(parsedContent);
           }
         } else {
           editorCore.current.clear();
         }
+        setLoading(false);
+        editorContainer.current.scrollTo(0, 0);
       });
     });
-
-    undo.clear();
   }, [node]);
 
   const handleInitialize = useCallback((instance) => {
     editorCore.current = instance;
   }, []);
 
-  const handleOnReady = useCallback(() => {
+  const handleReady = useCallback(() => {
     const editor = editorCore.current._editorJS;
-    setUndo(new Undo({ editor }));
+    const config = {
+      debounceTimer: 100,
+    };
+    setUndo(new Undo({ editor, config }));
     new DragDrop(editor);
   }, []);
 
@@ -153,12 +229,19 @@ export default function NodeMdEditor({ controller, node = {}, onSave }) {
   }, [node]);
 
   const handleCancel = useCallback(() => {
+    setLoading(true);
     getNodeContent(controller, node.id).then((content) => {
+      undo.clear();
       if (content !== null && content !== '') {
-        editorCore.current.render(JSON.parse(content));
+        const parsedContent = JSON.parse(content);
+        if (parsedContent.blocks !== 0) {
+          editorCore.current.render(parsedContent);
+          undo.initialize(parsedContent);
+        }
       } else {
         editorCore.current.clear();
       }
+      setLoading(false);
     });
   }, [node]);
 
@@ -177,7 +260,7 @@ export default function NodeMdEditor({ controller, node = {}, onSave }) {
       className={fullScreen ? 'editor-fullscreen' : 'editor-container'}
       onKeyDown={handleOnKeyDown}
     >
-      <div className={['bg-light', 'px-4', 'py-3', 'd-flex', 'shadow-sm', 'rounded-top'].join(' ')}>
+      <div className="bg-light px-4 py-3 d-flex shadow-sm rounded-top">
         <div className="flex-grow-1">
           <h6>Редактор контента</h6>
         </div>
@@ -208,19 +291,47 @@ export default function NodeMdEditor({ controller, node = {}, onSave }) {
         </Button>
       </div>
       <ReactEditorJS
-        value={editorContent}
         tools={tools}
+        i18n={i18n}
         holder="editor"
         onInitialize={handleInitialize}
-        onReady={handleOnReady}
+        onReady={handleReady}
         logLevel="ERROR"
       >
         <div
-          className={['bg-white', 'shadow-sm', 'rounded-bottom', 'mb-3', 'px-4', 'py-4', 'flex-column'].join(' ')}
-          style={fullScreen ? { height: '100%', maxHeight: '100%', overflow: 'auto' } : {}}
+          ref={editorContainer}
+          className="bg-white shadow-sm rounded-bottom mb-3 px-4 py-4 flex-column"
+          style={
+            fullScreen
+              ? {
+                height: '100%',
+                maxHeight: '100%',
+                overflow: 'auto',
+                display: loading ? 'none' : 'flex',
+              }
+              : {
+                maxHeight: '1000px',
+                width: '100%',
+                height: '100%',
+                overflow: 'auto',
+                display: loading ? 'none' : 'flex',
+              }
+         }
           id="editor"
         />
       </ReactEditorJS>
+      {loading && (
+      <div
+        className="bg-white shadow-sm rounded-bottom mb-3 px-4 py-4 flex-column"
+        style={fullScreen ? { height: '100%', overflow: 'hidden' } : { minHeight: '1000px', overflow: 'hidden' }}
+      >
+        <div className="d-flex justify-content-center">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Загрузка...</span>
+          </Spinner>
+        </div>
+      </div>
+      )}
     </div>
   );
 }

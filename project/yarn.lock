@@ -3412,9 +3412,9 @@ editorjs-text-alignment-blocktune@^1.0.3:
   integrity sha512-DAJ2LJP+WjETvU4lVOJCqZ1kZkKHp0GkujkqZgza9DRv7bO46m1M/s2d5Ba5hPFdmqk1vA/ci++MQXgWD7mWYw==
 
 editorjs-undo@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/editorjs-undo/-/editorjs-undo-2.0.1.tgz#59779f30606ee836c10cd129d78aaf952a67a166"
-  integrity sha512-9HxHDOA7ogsrgtTQLvqpGsnLPyTZNkdvt9En09Rvn1xMWhVlGIWGZMU+dZVnNPPYD46+CcduniAT1DxdYO0xpg==
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/editorjs-undo/-/editorjs-undo-2.0.3.tgz#d1f464a08f8cac4602831b396ee60bdea0aad8a9"
+  integrity sha512-Q0XSOM2I/E7y4nkKEnYr1QuQq6/M+uuY/G0857DZ1/6QDS9OLcwwszbV/vlCxZPMVFD1GDCN+YwLYKFwwO3htg==
   dependencies:
     vanilla-caret-js "^1.0.1"
 
