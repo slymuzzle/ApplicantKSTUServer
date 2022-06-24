@@ -32,7 +32,12 @@ configure-laravel () {
 
 # Run docker-compose command
 docker-compose() {
-    command docker-compose -f "$DOCKER_COMPOSE_FILE" --project-directory "$DOCKER_COMPOSE_DIR" -f "$DOCKER_BUILD_FILES_DIR"/"$ENV"/docker-compose.yml "${@:1}"
+    if ! command -v docker-compose &> /dev/null
+    then
+        command docker-compose -f "$DOCKER_COMPOSE_FILE" --project-directory "$DOCKER_COMPOSE_DIR" -f "$DOCKER_BUILD_FILES_DIR"/"$ENV"/docker-compose.yml "${@:1}"
+    else
+        command docker compose -f "$DOCKER_COMPOSE_FILE" --project-directory "$DOCKER_COMPOSE_DIR" -f "$DOCKER_BUILD_FILES_DIR"/"$ENV"/docker-compose.yml "${@:1}"
+    fi
 }
 
 # Show docker-compose.yml
