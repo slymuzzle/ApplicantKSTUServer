@@ -7,9 +7,13 @@ use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\Relation;
+use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
+use ExpoSDK\Expo;
+use ExpoSDK\ExpoMessage;
 
 class NotificationSenderScreen extends Screen
 {
@@ -51,7 +55,7 @@ class NotificationSenderScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make('Send Message')
+            Button::make('Отправить')
                 ->icon('paper-plane')
                 ->method('sendMessage')
         ];
@@ -66,25 +70,16 @@ class NotificationSenderScreen extends Screen
     {
         return [
             Layout::rows([
-                Input::make('subject')
-                    ->title('Subject')
+                Input::make('title')
+                    ->title('Заголовок')
                     ->required()
-                    ->placeholder('Message subject line')
+                    ->placeholder('...')
                     ->help('Enter the subject line for your message'),
 
-                Relation::make('users.')
-                    ->title('Recipients')
-                    ->multiple()
-                    ->required()
-                    ->placeholder('Email addresses')
-                    ->help('Enter the users that you would like to send this message to.')
-                    ->fromModel(User::class, 'name', 'email'),
-
-                Quill::make('content')
-                    ->title('Content')
-                    ->required()
-                    ->placeholder('Insert text here ...')
-                    ->help('Add the content for the message that you would like to send.')
+                TextArea::make('message')
+                    ->title('Сообщение')
+                    ->rows(20)
+                    ->placeholder('...'),
             ])
         ];
     }
@@ -96,6 +91,25 @@ class NotificationSenderScreen extends Screen
      */
     public function sendMessage(Request $request)
     {
+        $expo = Expo::driver('file');
+
+        $messages = [
+            [
+                'title' => 'Test notification',
+                'to' => 'ExponentPushToken[xxxx-xxxx-xxxx]',
+            ],
+            new ExpoMessage([
+                'title' => 'Notification for default recipients',
+                'body' => 'Because "to" property is not defined',
+            ]),
+        ];
+
+        $defaultRecipients = [
+            'ExponentPushToken[VsZhevMauXtqrYZ0jIGNw_]'
+        ];
+
+        $expo->send($messages)->to($defaultRecipients)->push();
+
         Alert::info('Your email message has been sent successfully.');
     }
 }

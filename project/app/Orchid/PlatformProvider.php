@@ -8,11 +8,6 @@ use Orchid\Platform\Dashboard;
 use Orchid\Platform\ItemPermission;
 use Orchid\Platform\OrchidServiceProvider;
 use Orchid\Screen\Actions\Menu;
-use Orchid\Support\Color;
-use Orchid\Screen\Layout;
-use Orchid\Screen\LayoutFactory;
-use Orchid\Screen\Repository;
-use App\Orchid\Layouts\Tree\TreeEditLayout;
 
 class PlatformProvider extends OrchidServiceProvider
 {

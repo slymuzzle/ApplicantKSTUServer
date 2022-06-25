@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0747c0ff162e55a4083bf6b0aa621814",
+    "content-hash": "41f7f5ac8c93c6c6fa9e7fdfa5d924a5",
     "packages": [
+        {
+            "name": "alymosul/exponent-server-sdk-php",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Alymosul/exponent-server-sdk-php.git",
+                "reference": "81e263c5f0b306f19da4acea7aa217b796626fff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Alymosul/exponent-server-sdk-php/zipball/81e263c5f0b306f19da4acea7aa217b796626fff",
+                "reference": "81e263c5f0b306f19da4acea7aa217b796626fff",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ExponentPhpSDK\\": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aly Suleiman",
+                    "email": "alymosul@gmail.com"
+                }
+            ],
+            "description": "Server-side library for working with Expo push notifications using PHP",
+            "keywords": [
+                "expo",
+                "exponent",
+                "notifications",
+                "push"
+            ],
+            "support": {
+                "issues": "https://github.com/Alymosul/exponent-server-sdk-php/issues",
+                "source": "https://github.com/Alymosul/exponent-server-sdk-php/tree/1.3.0"
+            },
+            "time": "2021-06-22T13:15:22+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.9.3",
@@ -65,6 +113,59 @@
                 }
             ],
             "time": "2021-08-15T20:50:18+00:00"
+        },
+        {
+            "name": "ctwillie/expo-server-sdk-php",
+            "version": "v2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ctwillie/expo-server-sdk-php.git",
+                "reference": "040f5d0709779b006c1f2838d175e5447444518a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ctwillie/expo-server-sdk-php/zipball/040f5d0709779b006c1f2838d175e5447444518a",
+                "reference": "040f5d0709779b006c1f2838d175e5447444518a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-zlib": "*",
+                "guzzlehttp/guzzle": "^6|^7",
+                "php": ">=7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ExpoSDK\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cedric Twillie",
+                    "email": "ctwillie77@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Server-side library for working with Expo using PHP",
+            "homepage": "https://github.com/ctwillie/expo-server-sdk-php",
+            "keywords": [
+                "expo",
+                "expo-server-sdk-php",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/ctwillie/expo-server-sdk-php/issues",
+                "source": "https://github.com/ctwillie/expo-server-sdk-php"
+            },
+            "time": "2021-10-26T22:49:01+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
