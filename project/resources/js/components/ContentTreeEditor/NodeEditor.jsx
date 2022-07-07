@@ -310,9 +310,7 @@ export default function NodeMdEditor({ controller, node = {}, onSave }) {
                 display: loading ? 'none' : 'flex',
               }
               : {
-                maxHeight: '1000px',
-                width: '100%',
-                height: '100%',
+                minHeight: '1000px',
                 overflow: 'auto',
                 display: loading ? 'none' : 'flex',
               }

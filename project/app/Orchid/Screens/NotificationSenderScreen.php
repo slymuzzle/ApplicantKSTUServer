@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens;
 
 use Illuminate\Http\Request;
+use Kreait\Firebase\Messaging\AndroidConfig;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Quill;
@@ -12,8 +13,7 @@ use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
-use ExpoSDK\Expo;
-use ExpoSDK\ExpoMessage;
+use Kreait\Firebase\Messaging\CloudMessage;
 
 class NotificationSenderScreen extends Screen
 {
@@ -73,8 +73,7 @@ class NotificationSenderScreen extends Screen
                 Input::make('title')
                     ->title('Заголовок')
                     ->required()
-                    ->placeholder('...')
-                    ->help('Enter the subject line for your message'),
+                    ->placeholder('...'),
 
                 TextArea::make('message')
                     ->title('Сообщение')
@@ -91,25 +90,25 @@ class NotificationSenderScreen extends Screen
      */
     public function sendMessage(Request $request)
     {
-        $expo = Expo::driver('file');
+        $messaging = app('firebase.messaging');
 
-        $messages = [
-            [
-                'title' => 'Test notification',
-                'to' => 'ExponentPushToken[xxxx-xxxx-xxxx]',
+        $topic = 'all';
+
+        $config = AndroidConfig::fromArray([
+            'notification' => [
+                'icon' => 'notification_icon',
             ],
-            new ExpoMessage([
-                'title' => 'Notification for default recipients',
-                'body' => 'Because "to" property is not defined',
-            ]),
-        ];
+        ]);
 
-        $defaultRecipients = [
-            'ExponentPushToken[VsZhevMauXtqrYZ0jIGNw_]'
-        ];
+        $message = CloudMessage::withTarget('topic', $topic)
+            ->withNotification([
+                'title' => $request->get('title'),
+                'body' => $request->get('message')
+            ])
+            ->withHighestPossiblePriority()
+            ->withDefaultSounds()
+            ->withAndroidConfig($config);
 
-        $expo->send($messages)->to($defaultRecipients)->push();
-
-        Alert::info('Your email message has been sent successfully.');
+        $messaging->send($message);
     }
 }
